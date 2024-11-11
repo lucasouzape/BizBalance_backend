@@ -1,0 +1,76 @@
+-- Tabela administrador
+CREATE TABLE administrador (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(100) NOT NULL
+);
+
+-- Tabela pao_de_mel
+CREATE TABLE pao_de_mel (
+    id SERIAL PRIMARY KEY,
+    sabor VARCHAR(50) NOT NULL,
+    quantidade INT NOT NULL,
+    validade DATE NOT NULL,
+    preco_custo NUMERIC(10, 2) NOT NULL,
+    preco_venda NUMERIC(10, 2) NOT NULL,
+    administrador_id INT,
+    FOREIGN KEY (administrador_id) REFERENCES administrador(id)
+);
+
+-- Tabela pao_de_mel_2
+CREATE TABLE pao_de_mel_2 (
+    id SERIAL PRIMARY KEY,
+    pao_de_mel_id INT NOT NULL,
+    sabor VARCHAR(50) NOT NULL,
+    quantidade INT NOT NULL,
+    validade DATE NOT NULL,
+    preco_custo NUMERIC(10, 2) NOT NULL,
+    preco_venda NUMERIC(10, 2) NOT NULL,
+    administrador_id INT,
+    FOREIGN KEY (pao_de_mel_id) REFERENCES pao_de_mel(id),
+    FOREIGN KEY (administrador_id) REFERENCES administrador(id)
+);
+
+-- Tabela brownie
+CREATE TABLE brownie (
+    id SERIAL PRIMARY KEY,
+    sabor VARCHAR(50) NOT NULL,
+    quantidade INT NOT NULL,
+    validade DATE NOT NULL,
+    preco_custo NUMERIC(10, 2) NOT NULL,
+    preco_venda NUMERIC(10, 2) NOT NULL,
+    administrador_id INT,
+    FOREIGN KEY (administrador_id) REFERENCES administrador(id)
+);
+
+-- Tabela recheio
+CREATE TABLE recheio (
+    id SERIAL PRIMARY KEY,
+    pao_de_mel_id INT NOT NULL,
+    sabor VARCHAR(50) NOT NULL,
+    quantidade INT NOT NULL,
+    validade DATE NOT NULL,
+    preco_custo NUMERIC(10, 2) NOT NULL,
+    preco_venda NUMERIC(10, 2) NOT NULL,
+    administrador_id INT,
+    FOREIGN KEY (pao_de_mel_id) REFERENCES pao_de_mel(id),
+    FOREIGN KEY (administrador_id) REFERENCES administrador(id)
+);
+
+-- Índices adicionais
+CREATE INDEX idx_pao_de_mel_sabor ON pao_de_mel(sabor);
+CREATE INDEX idx_pao_de_mel_validade ON pao_de_mel(validade);
+CREATE INDEX idx_pao_de_mel_administrador_id ON pao_de_mel(administrador_id);
+
+CREATE INDEX idx_pao_de_mel_2_sabor ON pao_de_mel_2(sabor);
+CREATE INDEX idx_pao_de_mel_2_validade ON pao_de_mel_2(validade);
+CREATE INDEX idx_pao_de_mel_2_administrador_id ON pao_de_mel_2(administrador_id);
+
+CREATE INDEX idx_brownie_sabor ON brownie(sabor);
+CREATE INDEX idx_brownie_validade ON brownie(validade);
+CREATE INDEX idx_brownie_administrador_id ON brownie(administrador_id);
+
+CREATE INDEX idx_recheio_sabor ON recheio(sabor);
+CREATE INDEX idx_recheio_validade ON recheio(validade);
+CREATE INDEX idx_recheio_administrador_id ON recheio(administrador_id);

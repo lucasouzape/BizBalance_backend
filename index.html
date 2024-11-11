@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Itens</title>
+</head>
+<body>
+    <div id="item-list"></div>
+
+    <script>
+        async function loadItems() {
+            const response = await fetch('http://localhost:8080/items');
+            const items = await response.json();
+            const itemList = document.getElementById("item-list");
+            
+            items.forEach(item => {
+                itemList.innerHTML += `<p>${item.name}: ${item.price}</p>`;
+            });
+        }
+
+        loadItems();
+    </script>
+</body>
+</html>
