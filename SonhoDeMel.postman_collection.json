@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "aceac197-21f8-4cd0-ab07-1a76b0d5fe37",
+		"name": "SonhoDeMel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1460356",
+		"_collection_link": "https://lorran-pegoretti.postman.co/workspace/Codex~340f7fda-7363-4fb3-8e0f-175f2397129b/collection/1460356-aceac197-21f8-4cd0-ab07-1a76b0d5fe37?action=share&source=collection_link&creator=1460356"
+	},
+	"item": [
+		{
+			"name": "Add Item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sabor\": \"Chocolate\",\n  \"quantidade\": 20,\n  \"validade\": \"2024-12-31T00:00:00Z\",\n  \"preco_custo\": 2.50,\n  \"preco_venda\": 5.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/pao_de_mel/add",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pao_de_mel",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/pao_de_mel",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pao_de_mel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

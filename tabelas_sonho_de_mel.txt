@@ -74,3 +74,9 @@ CREATE INDEX idx_brownie_administrador_id ON brownie(administrador_id);
 CREATE INDEX idx_recheio_sabor ON recheio(sabor);
 CREATE INDEX idx_recheio_validade ON recheio(validade);
 CREATE INDEX idx_recheio_administrador_id ON recheio(administrador_id);
+
+
+
+
+INSERT INTO public.administrador (nome,email,senha) VALUES
+	 ('Test','test@test.com','test');
