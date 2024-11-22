@@ -80,3 +80,58 @@ CREATE INDEX idx_recheio_administrador_id ON recheio(administrador_id);
 
 INSERT INTO public.administrador (nome,email,senha) VALUES
 	 ('Test','test@test.com','test');
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE pote_de_recheio (
+    id SERIAL PRIMARY KEY,
+    sabor VARCHAR(255) NOT NULL,
+    quantidade INT NOT NULL,
+    validade TIMESTAMP NOT NULL,
+    preco_custo NUMERIC(10,2) NOT NULL,
+    preco_venda NUMERIC(10,2) NOT NULL,
+    administrador_id INT NOT NULL
+);
+
+
+
+
+
+
+
+CREATE TABLE brownie (
+    id SERIAL PRIMARY KEY,
+    sabor VARCHAR(255) NOT NULL,
+    quantidade INT NOT NULL,
+    validade TIMESTAMP NOT NULL,
+    preco_custo NUMERIC(10,2) NOT NULL,
+    preco_venda NUMERIC(10,2) NOT NULL,
+    administrador_id INT NOT NULL
+);
+
+
+
+
+
+
+
+
+CREATE TABLE pao_de_mel (
+    id SERIAL PRIMARY KEY,
+    sabor VARCHAR(255) NOT NULL,
+    quantidade INT NOT NULL,
+    validade TIMESTAMP NOT NULL,
+    preco_custo NUMERIC(10,2) NOT NULL,
+    preco_venda NUMERIC(10,2) NOT NULL,
+    administrador_id INT NOT NULL
+);
