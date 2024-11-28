@@ -68,3 +68,56 @@ Importe o arquivo SonhoDeMel.postman_collection.json no Postman.
 Teste as rotas disponíveis, como:
 GET /pao_de_mel: Lista produtos.
 POST /pao_de_mel: Adiciona um produto.
+
+
+atualziacao com alteracao
+
+O que foi alterado:
+Nova rota /calculate:
+
+Configurada para lidar com requisições POST.
+Conecta ao método Calculate no controlador ItemController.
+Outros detalhes:
+
+Mantida a funcionalidade existente para listar (/pao_de_mel) e adicionar itens (/pao_de_mel/add).
+Configuração para rodar na porta especificada no .env ou na padrão (8080).
+______________________________________________________
+
+# BizBalance Backend
+
+O BizBalance Backend é uma aplicação para gerenciar finanças e fluxo de caixa, com funcionalidades específicas para a gestão de produtos da Sonho de Mel. Este projeto foi desenvolvido utilizando tecnologias modernas e é configurável para ambientes de desenvolvimento e produção.
+
+---
+
+## **Funcionalidades**
+- Cadastro, atualização e remoção de produtos como Pão de Mel.
+- Gestão de transações financeiras.
+- Integração com banco de dados PostgreSQL.
+- Suporte a testes de rotas via Postman.
+- Cálculos customizados através do endpoint `/calculate`.
+
+---
+
+## **Tecnologias Utilizadas**
+- **Linguagem de Programação**: Go (Golang)
+- **Banco de Dados**: PostgreSQL
+- **Containerização**: Docker e Docker Compose
+- **Ferramentas de Teste**: Postman
+- **Gerenciamento de Dependências**: Go Modules
+
+---
+
+## **Pré-requisitos**
+Certifique-se de ter os seguintes itens instalados no sistema:
+- **Go (Golang)** - Versão >= 1.19
+- **Docker** - Versão >= 20.10
+- **Postman** (opcional, para testar a API)
+
+---
+
+## **Configuração e Execução**
+
+### **Passo 1: Clone o Repositório**
+```bash
+git clone git@github.com:lucasouzape/BizBalance_backend.git
+cd BizBalance_backend

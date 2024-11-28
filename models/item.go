@@ -6,14 +6,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// Modelo para a tabela de itens gerais
 type Item struct {
-	gorm.Model          // inclui campos como ID, CreatedAt, UpdatedAt, DeletedAt
+	gorm.Model          // Inclui campos como ID, CreatedAt, UpdatedAt, DeletedAt
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
 }
 
-// Modelo para a tabela administrador
+// Modelo para a tabela de administradores
 type Administrador struct {
 	gorm.Model
 	Nome  string `json:"nome" gorm:"size:100;not null"`
@@ -21,19 +22,19 @@ type Administrador struct {
 	Senha string `json:"senha" gorm:"size:100;not null"`
 }
 
-// Modelo para a tabela pao_de_mel
+// Modelo para a tabela Pão de Mel
 type PaoDeMel struct {
 	gorm.Model
 	Sabor           string        `json:"sabor" gorm:"size:50;not null"`
 	Quantidade      int           `json:"quantidade" gorm:"not null"`
-	Validade        time.Time     `json:"validade" gorm:"not null"`
+	Validade        time.Time     `json:"validade" gorm:"not null"` // Configurável para 30 dias após a criação
 	PrecoCusto      float64       `json:"preco_custo" gorm:"type:numeric(10,2);not null"`
 	PrecoVenda      float64       `json:"preco_venda" gorm:"type:numeric(10,2);not null"`
 	AdministradorID uint          `json:"administrador_id"`
 	Administrador   Administrador `json:"administrador" gorm:"foreignKey:AdministradorID"`
 }
 
-// Modelo para a tabela pao_de_mel_2
+// Modelo para a tabela Pão de Mel (variante 2)
 type PaoDeMel2 struct {
 	gorm.Model
 	PaoDeMelID      uint          `json:"pao_de_mel_id" gorm:"not null"`
@@ -47,7 +48,7 @@ type PaoDeMel2 struct {
 	Administrador   Administrador `json:"administrador" gorm:"foreignKey:AdministradorID"`
 }
 
-// Modelo para a tabela brownie
+// Modelo para a tabela Brownie
 type Brownie struct {
 	gorm.Model
 	Sabor           string        `json:"sabor" gorm:"size:50;not null"`
@@ -59,7 +60,7 @@ type Brownie struct {
 	Administrador   Administrador `json:"administrador" gorm:"foreignKey:AdministradorID"`
 }
 
-// Modelo para a tabela recheio
+// Modelo para a tabela Recheio
 type Recheio struct {
 	gorm.Model
 	PaoDeMelID      uint          `json:"pao_de_mel_id" gorm:"not null"`
