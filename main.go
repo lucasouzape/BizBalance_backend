@@ -20,7 +20,12 @@ type Response struct {
 // Middleware para habilitar CORS
 func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		allowedOrigins := os.Getenv("CORS_ALLOWED_ORIGINS") // Configurável no .env
+		if allowedOrigins == "" {
+			allowedOrigins = "*" // Padrão para desenvolvimento
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigins)
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if r.Method == http.MethodOptions {
@@ -73,13 +78,16 @@ func main() {
 	if frontendPath == "" {
 		frontendPath = "./frontend"
 	}
+	fmt.Printf("Servindo arquivos estáticos de: %s\n", frontendPath)
 	fs := http.FileServer(http.Dir(frontendPath))
 	http.Handle("/", fs)
 
 	// Rotas da API
 	apiBasePath := "/api"
 	http.HandleFunc(apiBasePath+"/pao_de_mel", enableCORS(itemsController.GetAllPaoDeMel))
+	fmt.Println("Rota registrada: GET", apiBasePath+"/pao_de_mel")
 	http.HandleFunc(apiBasePath+"/pao_de_mel/add", enableCORS(itemsController.AddPaoDeMel))
+	fmt.Println("Rota registrada: POST", apiBasePath+"/pao_de_mel/add")
 	http.HandleFunc(apiBasePath+"/calculate", enableCORS(func(w http.ResponseWriter, r *http.Request) {
 		// Verificar o método HTTP
 		if r.Method == http.MethodGet {
@@ -94,6 +102,7 @@ func main() {
 			itemsController.Calculate(w, r)
 		}
 	}))
+	fmt.Println("Rota registrada: POST", apiBasePath+"/calculate")
 
 	// Iniciar servidor HTTP
 	port := os.Getenv("SERVER_PORT")
