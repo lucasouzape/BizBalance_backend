@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -13,19 +14,14 @@ import (
 	"bizbalance/repository"
 )
 
-type Response struct {
-	Message string `json:"message"`
+type ProductData struct {
+	Labels []string  `json:"labels"`
+	Values []float64 `json:"values"`
 }
 
-// Middleware para habilitar CORS
 func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		allowedOrigins := os.Getenv("CORS_ALLOWED_ORIGINS") // Configurável no .env
-		if allowedOrigins == "" {
-			allowedOrigins = "*" // Padrão para desenvolvimento
-		}
-
-		w.Header().Set("Access-Control-Allow-Origin", allowedOrigins)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if r.Method == http.MethodOptions {
@@ -36,13 +32,40 @@ func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// Carregar variáveis de ambiente com valores padrão
+func getProductData(conn *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+			return
+		}
+
+		products, err := repository.FetchProductData(conn)
+		if err != nil {
+			http.Error(w, "Erro ao buscar dados dos produtos", http.StatusInternalServerError)
+			return
+		}
+
+		labels := []string{}
+		values := []float64{}
+		for _, product := range products {
+			labels = append(labels, product.Name)
+			values = append(values, product.Value)
+		}
+
+		data := ProductData{
+			Labels: labels,
+			Values: values,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(data)
+	}
+}
+
 func loadEnv() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Arquivo .env não encontrado, usando valores padrão.")
 	}
 
-	// Verificar se variáveis essenciais estão definidas
 	requiredVars := []string{"DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME"}
 	for _, key := range requiredVars {
 		if os.Getenv(key) == "" {
@@ -52,28 +75,22 @@ func loadEnv() {
 }
 
 func main() {
-	// Carregar variáveis de ambiente
 	loadEnv()
 
-	// Obter credenciais do banco de dados
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 
-	// Conectar ao banco de dados
 	conn, err := repository.ConnectPostgres(dbHost, dbPort, dbUser, dbPassword, dbName)
 	if err != nil {
 		log.Fatalf("Falha ao conectar ao banco de dados: %v", err)
 	}
 	defer conn.Close()
-	fmt.Println("Conexão com o banco de dados estabelecida com sucesso!")
 
-	// Criar controlador
 	itemsController := controllers.NewItemController(conn)
 
-	// Servir arquivos estáticos do frontend
 	frontendPath := os.Getenv("FRONTEND_PATH")
 	if frontendPath == "" {
 		frontendPath = "./frontend"
@@ -82,29 +99,11 @@ func main() {
 	fs := http.FileServer(http.Dir(frontendPath))
 	http.Handle("/", fs)
 
-	// Rotas da API
 	apiBasePath := "/api"
 	http.HandleFunc(apiBasePath+"/pao_de_mel", enableCORS(itemsController.GetAllPaoDeMel))
-	fmt.Println("Rota registrada: GET", apiBasePath+"/pao_de_mel")
 	http.HandleFunc(apiBasePath+"/pao_de_mel/add", enableCORS(itemsController.AddPaoDeMel))
-	fmt.Println("Rota registrada: POST", apiBasePath+"/pao_de_mel/add")
-	http.HandleFunc(apiBasePath+"/calculate", enableCORS(func(w http.ResponseWriter, r *http.Request) {
-		// Verificar o método HTTP
-		if r.Method == http.MethodGet {
-			// Responder com uma mensagem explicativa para GET
-			response := map[string]string{
-				"message": "Use o método POST para enviar os dados para o cálculo.",
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
-		} else {
-			// Encaminhar para o controlador Calculate para POST
-			itemsController.Calculate(w, r)
-		}
-	}))
-	fmt.Println("Rota registrada: POST", apiBasePath+"/calculate")
+	http.HandleFunc(apiBasePath+"/products-data", enableCORS(getProductData(conn)))
 
-	// Iniciar servidor HTTP
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = "8080"
